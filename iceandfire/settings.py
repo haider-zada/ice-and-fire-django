@@ -78,12 +78,12 @@ WSGI_APPLICATION = 'iceandfire.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'task',
-        'USER': 'postgres',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ice_fire',
+        'USER': 'root',
         'PASSWORD': 'arbisoft@123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
 

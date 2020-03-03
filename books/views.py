@@ -1,10 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .utils import Utils, CreateBookSerializer, create_response
+from .utils import Utils, create_response
 from common.constants import *
-from .models import Books
-from .serializer import BookSerializer, BookFilterSerializer
-from rest_framework import viewsets, filters, generics
+from .serializer import *
+from rest_framework import viewsets
 
 # Create your views here.
 
@@ -85,7 +84,9 @@ class BookView(APIView):
 
 
 class BookFilterView(APIView):
-
+    """
+        User can filter on books using year, name, publisher and country.
+    """
     def post(self, request):
 
         serializer_obj = BookFilterSerializer(data=request.data)
@@ -106,6 +107,9 @@ class BookFilterView(APIView):
 
 
 class BookViewSet(viewsets.ModelViewSet):
+    """
+        View-Set for books CRUD
+    """
     queryset = Books.objects.all()
     serializer_class = BookSerializer
 
@@ -159,4 +163,64 @@ class BookViewSet(viewsets.ModelViewSet):
             return Response(create_response(status_code=204, status=status, data=[]))
 
         except Books.DoesNotExist:
+            return Response(create_response(status_code=404, status=ENTITY_NOT_FOUND, data=[]))
+
+
+class CountryViewSet(viewsets.ModelViewSet):
+    """
+        Views-Set for country CRUD
+    """
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
+
+    def list(self, request, *args, **kwargs):
+        response = super(CountryViewSet, self).list(request, *args, **kwargs)
+        response.data = create_response(status_code=200, status=MESSAGE_SUCCESS, data=response.data)
+        return response
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        try:
+            entity = Country.objects.get(pk=pk)
+            serializer = CountrySerializer(entity)
+            return Response(create_response(status_code=200, status=MESSAGE_SUCCESS, data=serializer.data))
+
+        except Country.DoesNotExist:
+            return Response(create_response(status_code=404, status=ENTITY_NOT_FOUND, data=[]))
+
+    def create(self, request, *args, **kwargs):
+
+        serializer_obj = CreateCountrySerializer(data=request.data)
+
+        if serializer_obj.is_valid():
+            serializer_obj.save()
+            return Response(create_response(status_code=201, status=MESSAGE_SUCCESS, data=[serializer_obj.validated_data]))
+
+        return Response(create_response(status_code=400, status=INVALID_MISSING_FIELDS, data=[]))
+
+    def update(self, request, pk=None, *args, **kwargs):
+        try:
+
+            entity = Country.objects.get(pk=pk)
+            status = 'The country {} was updated successfully'.format(entity.name)
+            serializer_obj = CountrySerializer(entity, data=request.data)
+
+            if serializer_obj.is_valid():
+                updated_country = serializer_obj.save()
+                data = CountrySerializer(updated_country).data
+
+                return Response(create_response(status_code=200, status=status, data=data))
+
+        except Country.DoesNotExist:
+            return Response(create_response(status_code=404, status=ENTITY_NOT_FOUND, data=[]))
+
+    def destroy(self, request, pk=None, *args, **kwargs):
+        try:
+
+            entity = Country.objects.get(pk=pk)
+            status = 'The country {} was deleted successfully'.format(entity.name)
+            entity.delete()
+
+            return Response(create_response(status_code=204, status=status, data=[]))
+
+        except Country.DoesNotExist:
             return Response(create_response(status_code=404, status=ENTITY_NOT_FOUND, data=[]))

@@ -18,14 +18,16 @@ from django.urls import path, include
 from rest_framework import routers
 from books import views
 
+
+router = routers.DefaultRouter()
+router.register(r'books', views.BookViewSet)
+router.register(r'country', views.CountryViewSet)
+
 """
     1. external-books api will get data from ice and fire api
     2. urls with v1 is using API VIEWS
     3. urls with v2 is using VIEW SET
 """
-
-router = routers.DefaultRouter()
-router.register(r'books', views.BookViewSet)
 
 urlpatterns = [
     path('external-books', views.ExternalBook.as_view()),
