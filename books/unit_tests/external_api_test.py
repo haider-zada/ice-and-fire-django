@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 
 
-class BooksTestCase(APITestCase):
+class BooksExternalTestCase(APITestCase):
 
     def test_ice_and_fire_external(self):
         """

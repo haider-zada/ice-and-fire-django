@@ -4,7 +4,7 @@ from books.models import Books, Country, Author
 # Create your tests here.
 
 
-class BooksTestCase(APITestCase):
+class BooksTestCaseV2(APITestCase):
 
     def setUp(self):
         country_json = {"name": "pakistan"}

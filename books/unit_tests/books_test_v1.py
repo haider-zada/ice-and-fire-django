@@ -4,7 +4,7 @@ from books.models import Books, Country, Author
 # Create your tests here.
 
 
-class BooksTestCase(APITestCase):
+class BooksTestCaseV1(APITestCase):
 
     def setUp(self):
         country_json = {"name": "pakistan"}
@@ -16,25 +16,6 @@ class BooksTestCase(APITestCase):
         self.book = Books.objects.create(**book_json)
         self.author = Author.objects.create(**{"name": "arbisoft"})
         self.book.authors.add(self.author.id)
-
-    def test_ice_and_fire_external(self):
-        """
-            This test case will fetch data from external API using name provided in Query Param
-
-        """
-        response = self.client.get('/api/external-books?name=A Game of Thrones', format='json')
-        self.assertEqual(200, response.data['status_code'])
-
-    def test_ice_and_fire_external_invalid_search(self):
-        """
-            This test case will fetch data from external API using name provided in Query Param length will be equal to
-            zero as providing invalid name
-
-        """
-        response = self.client.get('/api/external-books?name=abc23123', format='json')
-        self.assertEqual(200, response.data['status_code'])
-        self.assertEqual(0, len(response.data['data']))
-
 
     def test_create_book_with_invalid_fields(self):
         """Invalid data 400 will be returned"""
