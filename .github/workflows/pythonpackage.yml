@@ -29,4 +29,4 @@ jobs:
         pip install pytest
     - name: Test with pytest
       run: |
-        pytest
+        pytest books/unit_tests/books_pytest.py
